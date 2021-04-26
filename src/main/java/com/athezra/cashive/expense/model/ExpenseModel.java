@@ -8,11 +8,13 @@ import java.util.Date;
 @Data
 public class ExpenseModel {
 
+    private Long id;
+
     private String description;
 
-    private Integer amount;
+    private Float amount;
 
-    @JsonFormat(pattern="dd/MM/yyyy")
+    @JsonFormat(pattern="yyyy/MM/dd")
     private Date expenseDateOccurred;
 
     private String type;

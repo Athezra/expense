@@ -36,6 +36,7 @@ public class ExpenseService {
     public List<ExpenseModel> getAllExpense() {
         return expenseRepository.findAll().stream().map(expense -> {
            ExpenseModel model = new ExpenseModel();
+           model.setId(expense.getId());
            model.setDescription(expense.getDescription());
            model.setAmount(expense.getAmount());
            model.setExpenseDateOccurred(expense.getExpenseDateOccurred());

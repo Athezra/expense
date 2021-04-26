@@ -29,7 +29,7 @@ public class Expense {
     private String description;
 
     @Column(name = "exp_amount", unique = true, nullable = false)
-    private Integer amount;
+    private Float amount;
 
     @Column(name = "exp_type", unique = true, nullable = false)
     private String type;
