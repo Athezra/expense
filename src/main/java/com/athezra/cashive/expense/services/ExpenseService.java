@@ -3,30 +3,30 @@ package com.athezra.cashive.expense.services;
 import com.athezra.cashive.expense.entities.Expense;
 import com.athezra.cashive.expense.model.ExpenseModel;
 import com.athezra.cashive.expense.repositories.ExpenseRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ExpenseService {
 
-    @Autowired
-    private ExpenseRepository expenseRepository;
+    private final ExpenseRepository expenseRepository;
 
-    public Expense saveExpense(ExpenseModel expenseModel)
+    public ExpenseModel saveExpense(ExpenseModel expenseModel)
     {
         Expense expenseEntity = new Expense();
         expenseEntity.setDescription(expenseModel.getDescription());
         expenseEntity.setExpenseDateOccurred(expenseModel.getExpenseDateOccurred());
         expenseEntity.setAmount(expenseModel.getAmount());
         expenseEntity.setType(expenseModel.getType());
-        expenseEntity.setExpenseDateCreated(new Date());
-        expenseEntity.setExpenseDateLastUpdated(new Date());
+        expenseEntity.setExpenseDateCreated(ZonedDateTime.now());
+        expenseEntity.setExpenseDateLastUpdated(ZonedDateTime.now());
 
-        return expenseRepository.save(expenseEntity);
+        return getExpenseModelFromEntity(expenseRepository.save(expenseEntity));
     }
 
     public void deleteExpense(Long id) {
@@ -34,14 +34,16 @@ public class ExpenseService {
     }
 
     public List<ExpenseModel> getAllExpense() {
-        return expenseRepository.findAll().stream().map(expense -> {
-           ExpenseModel model = new ExpenseModel();
-           model.setId(expense.getId());
-           model.setDescription(expense.getDescription());
-           model.setAmount(expense.getAmount());
-           model.setExpenseDateOccurred(expense.getExpenseDateOccurred());
-           model.setType(expense.getType());
-           return model;
-        }).collect(Collectors.toList());
+        return expenseRepository.findAll().stream().map(this::getExpenseModelFromEntity).collect(Collectors.toList());
+    }
+
+    private ExpenseModel getExpenseModelFromEntity(Expense expense) {
+        ExpenseModel model = new ExpenseModel();
+        model.setId(expense.getId());
+        model.setDescription(expense.getDescription());
+        model.setAmount(expense.getAmount());
+        model.setExpenseDateOccurred(expense.getExpenseDateOccurred());
+        model.setType(expense.getType());
+        return model;
     }
 }
